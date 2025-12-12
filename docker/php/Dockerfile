@@ -15,12 +15,13 @@ RUN apt-get update && apt-get install -y \
 # Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www/html
+# Crear usuario con UID/GID 1000 para evitar problemas de permisos
+RUN groupadd -g 1000 appuser && \
+    useradd -u 1000 -g 1000 -m -s /bin/bash appuser && \
+    usermod -aG www-data appuser && \
+    mkdir -p /home/appuser/.composer && \
+    chown -R appuser:appuser /home/appuser
 
-# Opcional: usuario no root (si querés)
-# RUN useradd -G www-data,root -u 1000 -d /home/appuser appuser \
-#     && mkdir -p /home/appuser/.composer \
-#     && chown -R appuser:appuser /home/appuser
-# USER appuser
+WORKDIR /var/www/html
 
 CMD ["php-fpm"]
