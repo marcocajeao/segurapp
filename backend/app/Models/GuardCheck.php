@@ -14,10 +14,9 @@ class GuardCheck extends Model
         'comment',
     ];
 
-    public function neighborhood()
-    {
-        return $this->belongsTo(Neighborhood::class);
-    }
+    public const RESULT_PAID = 'PAID';
+    public const RESULT_UNPAID = 'UNPAID';
+    public const RESULT_NON_BENEFICIARY = 'NON_BENEFICIARY';
 
     public function property()
     {
@@ -27,5 +26,10 @@ class GuardCheck extends Model
     public function guard()
     {
         return $this->belongsTo(User::class, 'guard_id');
+    }
+
+    public function neighborhood()
+    {
+        return $this->belongsTo(Neighborhood::class);
     }
 }

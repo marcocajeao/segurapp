@@ -21,13 +21,15 @@ class Property extends Model
         'is_beneficiary',
         'qr_token',
         'active',
+        'registered_at',
     ];
 
     protected $casts = [
-        'latitude'      => 'float',
-        'longitude'     => 'float',
-        'is_beneficiary'=> 'boolean',
-        'active'        => 'boolean',
+        'latitude'        => 'float',
+        'longitude'       => 'float',
+        'is_beneficiary'  => 'boolean',
+        'active'          => 'boolean',
+        'registered_at'   => 'datetime',
     ];
 
     public function neighborhood()
@@ -40,13 +42,15 @@ class Property extends Model
         return $this->belongsTo(Beneficiary::class);
     }
 
-    public function monthlyFees()
-    {
-        return $this->hasMany(MonthlyFee::class);
-    }
-
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+    /* Helpers de dominio simples */
+
+    public function isActiveBeneficiary(): bool
+    {
+        return $this->active && $this->is_beneficiary;
     }
 }

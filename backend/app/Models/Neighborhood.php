@@ -13,6 +13,11 @@ class Neighborhood extends Model
         'active',
     ];
 
+    protected $casts = [
+        'default_due_day' => 'integer',
+        'active' => 'boolean',
+    ];
+
     public function users()
     {
         return $this->hasMany(User::class);
@@ -36,11 +41,6 @@ class Neighborhood extends Model
     public function feeAdjustments()
     {
         return $this->hasMany(FeeAdjustment::class);
-    }
-
-    public function monthlyFees()
-    {
-        return $this->hasMany(MonthlyFee::class);
     }
 
     public function paymentGatewayConfig()
