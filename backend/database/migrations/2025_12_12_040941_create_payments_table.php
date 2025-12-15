@@ -9,9 +9,12 @@ return new class extends Migration {
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('neighborhood_id')->constrained()->cascadeOnDelete();
             $table->foreignId('property_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('monthly_fee_id')->constrained('monthly_fees')->cascadeOnDelete();
+
+            // Mes al que corresponde el pago (YYYY-MM-01)
+            $table->date('period')->index();
 
             $table->enum('method', ['MERCADO_PAGO', 'CASH', 'BANK_TRANSFER']);
             $table->enum('status', ['PENDING', 'PENDING_REVIEW', 'APPROVED', 'REJECTED', 'REFUNDED'])->default('PENDING');
@@ -33,8 +36,12 @@ return new class extends Migration {
 
             $table->timestamps();
 
+            // Evita pagos duplicados para el mismo mes y la misma propiedad
+            $table->unique(['property_id', 'period'], 'payments_property_period_unique');
+
             $table->index(['neighborhood_id', 'status']);
             $table->index(['method', 'status']);
+            $table->index(['property_id', 'status', 'period']);
         });
     }
 
@@ -43,4 +50,3 @@ return new class extends Migration {
         Schema::dropIfExists('payments');
     }
 };
-

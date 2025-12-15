@@ -23,7 +23,7 @@ class GuardCheck extends Model
         return $this->belongsTo(Property::class);
     }
 
-    public function guard()
+    public function guardUser()
     {
         return $this->belongsTo(User::class, 'guard_id');
     }

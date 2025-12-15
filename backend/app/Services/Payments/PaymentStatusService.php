@@ -57,7 +57,9 @@ class PaymentStatusService
         return Payment::query()
             ->where('property_id', $property->id)
             ->where('status', Payment::STATUS_APPROVED)
-            ->whereBetween('period', [$start->toDateString(), $end->toDateString()])
+            // Usar whereDate evita problemas de comparación si el driver/cast juega con timezones o tipos
+            ->whereDate('period', '>=', $start->toDateString())
+            ->whereDate('period', '<=', $end->toDateString())
             ->pluck('period')
             ->map(fn ($d) => Carbon::parse($d)->startOfMonth()->toDateString())
             ->unique()
